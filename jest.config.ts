@@ -3,6 +3,10 @@
  * https://jestjs.io/docs/configuration
  */
 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 export default {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
