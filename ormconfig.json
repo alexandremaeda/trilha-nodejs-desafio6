@@ -1,3 +1,5 @@
+// docker run --name ignite-fin_api -e POSTGRES_DB=fin_api -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
+
 {
   "username": "postgres",
   "password": "docker",
@@ -7,12 +9,8 @@
   "host": "localhost",
   "port": 5432,
   "database": "fin_api",
-  "entities": [
-    "./src/modules/**/entities/*.ts"
-  ],
-  "migrations": [
-    "./src/database/migrations/*.ts"
-  ],
+  "entities": ["./src/modules/**/entities/*.ts"],
+  "migrations": ["./src/database/migrations/*.ts"],
   "cli": {
     "migrationsDir": "./src/database/migrations"
   }
