@@ -4,15 +4,17 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { ColumnNumericTransformer } from '../../../utils/ColumnNumericTransformer';
 
 import { User } from '../../users/entities/User';
 
 enum OperationType {
   DEPOSIT = 'deposit',
   WITHDRAW = 'withdraw',
+  TRANSFER = 'transfer',
 }
 
 @Entity('statements')
@@ -23,14 +25,25 @@ export class Statement {
   @Column('uuid')
   user_id: string;
 
-  @ManyToOne(() => User, user => user.statement)
+  @ManyToOne(() => User, (user) => user.statement)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @Column('uuid')
+  sender_id: string;
+
+  @ManyToOne(() => User, (user) => user.statement)
+  @JoinColumn({ name: 'sender_id' })
+  send: User;
 
   @Column()
   description: string;
 
-  @Column('decimal', { precision: 5, scale: 2 })
+  @Column('decimal', {
+    precision: 5,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   amount: number;
 
   @Column({ type: 'enum', enum: OperationType })
