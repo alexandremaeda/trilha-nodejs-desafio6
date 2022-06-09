@@ -1,16 +1,16 @@
-import { getRepository, Repository } from "typeorm";
+import { getRepository, Repository } from 'typeorm';
 
-import { Statement } from "../entities/Statement";
-import { ICreateStatementDTO } from "../useCases/createStatement/ICreateStatementDTO";
-import { ICreateStatementTransferDTO } from "../useCases/createStatementTransfer/ICreateStatementTransferDTO";
-import { IGetBalanceDTO } from "../useCases/getBalance/IGetBalanceDTO";
-import { IGetStatementOperationDTO } from "../useCases/getStatementOperation/IGetStatementOperationDTO";
-import { IStatementsRepository } from "./IStatementsRepository";
+import { Statement } from '../entities/Statement';
+import { ICreateStatementDTO } from '../useCases/createStatement/ICreateStatementDTO';
+import { ICreateStatementTransferDTO } from '../useCases/createStatementTransfer/ICreateStatementTransferDTO';
+import { IGetBalanceDTO } from '../useCases/getBalance/IGetBalanceDTO';
+import { IGetStatementOperationDTO } from '../useCases/getStatementOperation/IGetStatementOperationDTO';
+import { IStatementsRepository } from './IStatementsRepository';
 
 enum OperationType {
-  DEPOSIT = "deposit",
-  WITHDRAW = "withdraw",
-  TRANSFER = "transfer",
+  DEPOSIT = 'deposit',
+  WITHDRAW = 'withdraw',
+  TRANSFER = 'transfer',
 }
 
 export class StatementsRepository implements IStatementsRepository {
@@ -74,7 +74,7 @@ export class StatementsRepository implements IStatementsRepository {
 
     const balance = statement.reduce((acc, operation) => {
       const amount = operation.amount;
-      if (operation.type === "deposit") {
+      if (operation.type !== OperationType.WITHDRAW) {
         return acc + amount;
       } else {
         return acc - amount;

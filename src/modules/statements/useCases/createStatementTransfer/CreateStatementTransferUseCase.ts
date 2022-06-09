@@ -1,17 +1,23 @@
-import { inject, injectable } from "tsyringe";
+import { inject, injectable } from 'tsyringe';
 
-import { IUsersRepository } from "../../../users/repositories/IUsersRepository";
-import { IStatementsRepository } from "../../repositories/IStatementsRepository";
-import { CreateStatementTransferError } from "./CreateStatementTransferError";
-import { ICreateStatementTransferDTO } from "./ICreateStatementTransferDTO";
+import { IUsersRepository } from '../../../users/repositories/IUsersRepository';
+import { IStatementsRepository } from '../../repositories/IStatementsRepository';
+import { CreateStatementTransferError } from './CreateStatementTransferError';
+import { ICreateStatementTransferDTO } from './ICreateStatementTransferDTO';
+
+enum OperationType {
+  DEPOSIT = 'deposit',
+  WITHDRAW = 'withdraw',
+  TRANSFER = 'transfer',
+}
 
 @injectable()
 export class CreateStatementTransferUseCase {
   constructor(
-    @inject("UsersRepository")
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
 
-    @inject("StatementsRepository")
+    @inject('StatementsRepository')
     private statementsRepository: IStatementsRepository
   ) {}
 
@@ -30,24 +36,31 @@ export class CreateStatementTransferUseCase {
     const send = await this.usersRepository.findById(sender_id);
 
     if (!send) {
-      throw new CreateStatementTransferError.SendNotFound();
+      throw new CreateStatementTransferError.SenderNotFound();
     }
 
     const { balance } = await this.statementsRepository.getUserBalance({
-      user_id,
+      user_id: sender_id,
     });
 
     if (balance < amount) {
       throw new CreateStatementTransferError.InsufficientFunds();
     }
 
-    const statementOperation = await this.statementsRepository.transfer({
+    const statementTransfer = await this.statementsRepository.transfer({
       user_id,
       sender_id,
       amount,
       description,
     });
 
-    return statementOperation;
+    const statementOperation = await this.statementsRepository.create({
+      user_id: sender_id,
+      type: OperationType.WITHDRAW,
+      amount,
+      description,
+    });
+
+    return statementTransfer;
   }
 }
