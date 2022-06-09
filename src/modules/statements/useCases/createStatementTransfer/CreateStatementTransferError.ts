@@ -7,7 +7,7 @@ export namespace CreateStatementTransferError {
     }
   }
 
-  export class SendNotFound extends AppError {
+  export class SenderNotFound extends AppError {
     constructor() {
       super('Sender not found', 404);
     }
