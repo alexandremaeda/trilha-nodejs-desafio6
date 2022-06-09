@@ -33,8 +33,9 @@ export class Statement {
   sender_id: string;
 
   @ManyToOne(() => User, (user) => user.statement)
+  // @ManyToOne((type) => User, { eager: true })
   @JoinColumn({ name: 'sender_id' })
-  send: User;
+  sender: User;
 
   @Column()
   description: string;
